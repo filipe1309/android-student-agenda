@@ -7,9 +7,6 @@ import java.util.List;
 
 import br.com.alura.agenda.modelo.Aluno;
 
-/**
- * Created by renan on 15/01/16.
- */
 public class AlunoConverter {
     public String converteParaJSON(List<Aluno> alunos) {
         JSONStringer js = new JSONStringer();
@@ -28,5 +25,22 @@ public class AlunoConverter {
         }
 
         return js.toString();
+    }
+
+    public String converteParaJSONCompleto(Aluno aluno) {
+        JSONStringer js = new JSONStringer();
+        try {
+            js.object()
+                    .key("nome").value(aluno.getNome())
+                    .key("endereco").value(aluno.getEndereco())
+                    .key("site").value(aluno.getSite())
+                    .key("telefone").value(aluno.getTelefone())
+                    .key("nota").value(aluno.getNota())
+            .endObject();
+            return js.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
