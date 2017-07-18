@@ -12,9 +12,6 @@ import java.util.List;
 
 import br.com.alura.agenda.modelo.Aluno;
 
-/**
- * Created by alura on 12/08/15.
- */
 public class AlunoDAO extends SQLiteOpenHelper {
     public AlunoDAO(Context context) {
         super(context, "Agenda", null, 2);
@@ -34,10 +31,10 @@ public class AlunoDAO extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "";
+        //String sql = "";
         switch (oldVersion) {
             case 1:
-                sql = "ALTER TABLE Alunos ADD COLUMN caminhoFoto TEXT";
+                String sql = "ALTER TABLE Alunos ADD COLUMN caminhoFoto TEXT";
                 db.execSQL(sql); // indo para versao 2
         }
 
@@ -69,7 +66,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery(sql, null);
 
-        List<Aluno> alunos = new ArrayList<Aluno>();
+        List<Aluno> alunos = new ArrayList<>();
         while (c.moveToNext()) {
             Aluno aluno = new Aluno();
             aluno.setId(c.getLong(c.getColumnIndex("id")));
