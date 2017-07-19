@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 
 import br.com.alura.agenda.ListaAlunosActivity;
@@ -70,10 +71,13 @@ public class AlunosAdapter extends BaseAdapter {
         ImageView campoFoto = (ImageView) view.findViewById(R.id.item_foto);
         String caminhoFoto = aluno.getCaminhoFoto();
         if (caminhoFoto != null) {
-            Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
-            Bitmap bitmapReduzido = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
-            campoFoto.setImageBitmap(bitmapReduzido);
-            campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+            File file = new File(caminhoFoto);
+            if(file.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(caminhoFoto);
+                Bitmap bitmapReduzido = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+                campoFoto.setImageBitmap(bitmapReduzido);
+                campoFoto.setScaleType(ImageView.ScaleType.FIT_XY);
+            }
         }
 
         return view;
