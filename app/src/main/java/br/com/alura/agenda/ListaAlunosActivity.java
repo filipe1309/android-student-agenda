@@ -87,12 +87,13 @@ public class ListaAlunosActivity extends AppCompatActivity {
             public void onResponse(Call<List<Aluno>> call, Response<List<Aluno>> response) {
                 List<Aluno> alunos = response.body();
                 AlunoDAO dao = new AlunoDAO(ListaAlunosActivity.this);
-                dao.insere(alunos);
+                dao.sincroniza(alunos);
+                dao.close();
             }
 
             @Override
             public void onFailure(Call<List<Aluno>> call, Throwable t) {
-
+                Log.e("onFailure chamado", t.getMessage());
             }
         });
 
