@@ -175,6 +175,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
         String existe = "SELECT id FROM Alunos WHERE id=? LIMIT 1";
         Cursor cursor = db.rawQuery(existe, new String[]{aluno.getId()});
         int quantidade = cursor.getCount();
+        cursor.close();
         return quantidade > 0;
     }
 }
