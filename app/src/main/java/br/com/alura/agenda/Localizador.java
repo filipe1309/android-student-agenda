@@ -1,9 +1,11 @@
 package br.com.alura.agenda;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -21,8 +23,10 @@ public class Localizador implements GoogleApiClient.ConnectionCallbacks, Locatio
 
     private final GoogleApiClient client;
     private final GoogleMap mapa;
+    private Context context;
 
     public Localizador(Context context, GoogleMap mapa) {
+        this.context = context;
         client = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -40,6 +44,16 @@ public class Localizador implements GoogleApiClient.ConnectionCallbacks, Locatio
         request.setInterval(1000);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
     }
 
