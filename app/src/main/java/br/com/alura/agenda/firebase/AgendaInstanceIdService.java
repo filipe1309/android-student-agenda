@@ -33,7 +33,7 @@ public class AgendaInstanceIdService extends FirebaseInstanceIdService {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-
+                Log.e("token falhou", t.getMessage());
             }
         });
     }
