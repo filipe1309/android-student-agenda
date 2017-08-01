@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -163,7 +162,11 @@ public class AlunoDAO extends SQLiteOpenHelper {
         for (Aluno aluno :
                 alunos) {
             if (existe(aluno)) {
-                altera(aluno);
+                if (aluno.estaDesativado()) {
+                    deleta(aluno);
+                } else {
+                    altera(aluno);
+                }
             } else {
                 insere(aluno);
             }
