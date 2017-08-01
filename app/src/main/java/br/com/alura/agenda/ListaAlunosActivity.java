@@ -39,14 +39,14 @@ public class ListaAlunosActivity extends AppCompatActivity {
 
     private ListView listaAlunos;
     private SwipeRefreshLayout swipe;
+    private EventBus eventBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_alunos);
 
-        EventBus eventBus = EventBus.getDefault();
-        eventBus.register(this);
+        eventBus = EventBus.getDefault();
 
         listaAlunos = (ListView) findViewById(R.id.lista_alunos);
         swipe = (SwipeRefreshLayout) findViewById(R.id.swipe_lista_aluno);
@@ -105,8 +105,14 @@ public class ListaAlunosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        eventBus.register(this);
         carregaLista();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        eventBus.unregister(this);
     }
 
     private void buscaAlunos() {
