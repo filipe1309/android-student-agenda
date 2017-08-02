@@ -167,7 +167,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
                 } else {
                     altera(aluno);
                 }
-            } else {
+            } else if (!aluno.estaDesativado()) {
                 insere(aluno);
             }
         }
