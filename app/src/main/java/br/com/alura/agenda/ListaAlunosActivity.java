@@ -117,11 +117,6 @@ public class ListaAlunosActivity extends AppCompatActivity {
         eventBus.unregister(this);
     }
 
-    private void buscaAlunos() {
-
-        sincronizador.buscaAlunos();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_lista_alunos, menu);
