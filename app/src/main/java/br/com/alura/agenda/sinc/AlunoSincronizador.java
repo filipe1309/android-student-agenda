@@ -6,6 +6,7 @@ import org.greenrobot.eventbus.EventBus;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.dto.AlunoSync;
 import br.com.alura.agenda.event.AtualizaListaAlunoEvent;
+import br.com.alura.agenda.preferences.AlunoPreferences;
 import br.com.alura.agenda.retrofit.RetrofitInicializador;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,9 +27,17 @@ public class AlunoSincronizador {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
+                String versao = alunoSync.getMomentoDaUltimaModificacao();
+
+                AlunoPreferences preferences = new AlunoPreferences(context);
+                preferences.salvaVersao(versao);
+
                 AlunoDAO dao = new AlunoDAO(context);
                 dao.sincroniza(alunoSync.getAlunos());
                 dao.close();
+
+                Log.i("versao", preferences.getVersao());
+                
                 bus.post(new AtualizaListaAlunoEvent());
             }
 
