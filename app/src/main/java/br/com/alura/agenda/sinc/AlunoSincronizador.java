@@ -67,6 +67,8 @@ public class AlunoSincronizador {
                 Log.i("versao", preferences.getVersao());
 
                 bus.post(new AtualizaListaAlunoEvent());
+
+                sincronizaAlunosInternos();
             }
 
             @Override
@@ -77,7 +79,7 @@ public class AlunoSincronizador {
         };
     }
 
-    public void sincronizaAlunosInternos() {
+    private void sincronizaAlunosInternos() {
         final AlunoDAO dao = new AlunoDAO(context);
 
         List<Aluno> alunos = dao.listaNaoSincronizados();
@@ -99,13 +101,15 @@ public class AlunoSincronizador {
         });
     }
 
-    public void deleta(Aluno aluno) {
+    public void deleta(final Aluno aluno) {
         Call<Void> call = new RetrofitInicializador().getAlunoService().deleta(aluno.getId());
 
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-
+                AlunoDAO dao = new AlunoDAO(context);
+                dao.deleta(aluno);
+                dao.close();
             }
 
             @Override
