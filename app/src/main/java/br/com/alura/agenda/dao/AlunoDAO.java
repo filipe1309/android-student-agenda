@@ -26,7 +26,7 @@ public class AlunoDAO extends SQLiteOpenHelper {
                 "site TEXT, " +
                 "nota REAL, " +
                 "caminhoFoto TEXT," +
-                "sincronizado INT DEFAULT 0" +
+                "sincronizado INT DEFAULT 0," +
                 "desativado INT DEFAULT 0" +
                 ");";
         db.execSQL(sql);
