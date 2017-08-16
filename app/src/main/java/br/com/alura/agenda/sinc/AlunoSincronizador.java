@@ -4,6 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import org.greenrobot.eventbus.EventBus;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.dto.AlunoSync;
@@ -71,11 +75,32 @@ public class AlunoSincronizador {
     public void sincroniza(AlunoSync alunoSync) {
         String versao = alunoSync.getMomentoDaUltimaModificacao();
 
-        preferences.salvaVersao(versao);
+        if (temVersaoNova(versao)) {
+            preferences.salvaVersao(versao);
 
-        AlunoDAO dao = new AlunoDAO(context);
-        dao.sincroniza(alunoSync.getAlunos());
-        dao.close();
+            AlunoDAO dao = new AlunoDAO(context);
+            dao.sincroniza(alunoSync.getAlunos());
+            dao.close();
+        }
+    }
+
+    private boolean temVersaoNova(String versao) {
+        if (!preferences.temVersao()) {
+            return true;
+        }
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+        try {
+            Date dataExterna = format.parse(versao);
+            String versaoInterna = preferences.getVersao();
+            Date dataInterna = format.parse(versaoInterna);
+            return dataExterna.after(dataInterna);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     private void sincronizaAlunosInternos() {
