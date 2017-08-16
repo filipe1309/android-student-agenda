@@ -3,13 +3,8 @@ package br.com.alura.agenda.sinc;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
-
 import org.greenrobot.eventbus.EventBus;
-
 import java.util.List;
-
-import br.com.alura.agenda.ListaAlunosActivity;
 import br.com.alura.agenda.dao.AlunoDAO;
 import br.com.alura.agenda.dto.AlunoSync;
 import br.com.alura.agenda.event.AtualizaListaAlunoEvent;
@@ -56,13 +51,7 @@ public class AlunoSincronizador {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                String versao = alunoSync.getMomentoDaUltimaModificacao();
-
-                preferences.salvaVersao(versao);
-
-                AlunoDAO dao = new AlunoDAO(context);
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
+                sincroniza(alunoSync);
 
                 Log.i("versao", preferences.getVersao());
 
@@ -77,6 +66,16 @@ public class AlunoSincronizador {
                 bus.post(new AtualizaListaAlunoEvent());
             }
         };
+    }
+
+    public void sincroniza(AlunoSync alunoSync) {
+        String versao = alunoSync.getMomentoDaUltimaModificacao();
+
+        preferences.salvaVersao(versao);
+
+        AlunoDAO dao = new AlunoDAO(context);
+        dao.sincroniza(alunoSync.getAlunos());
+        dao.close();
     }
 
     private void sincronizaAlunosInternos() {
