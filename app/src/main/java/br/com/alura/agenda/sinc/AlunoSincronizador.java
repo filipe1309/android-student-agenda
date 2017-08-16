@@ -57,7 +57,7 @@ public class AlunoSincronizador {
                 AlunoSync alunoSync = response.body();
                 sincroniza(alunoSync);
 
-                Log.i("versao", preferences.getVersao());
+//                Log.i("versao", preferences.getVersao());
 
                 bus.post(new AtualizaListaAlunoEvent());
 
@@ -75,8 +75,12 @@ public class AlunoSincronizador {
     public void sincroniza(AlunoSync alunoSync) {
         String versao = alunoSync.getMomentoDaUltimaModificacao();
 
+        Log.i("versao externa", versao);
+
         if (temVersaoNova(versao)) {
             preferences.salvaVersao(versao);
+
+            Log.i("versao atual", preferences.getVersao());
 
             AlunoDAO dao = new AlunoDAO(context);
             dao.sincroniza(alunoSync.getAlunos());
@@ -94,6 +98,9 @@ public class AlunoSincronizador {
         try {
             Date dataExterna = format.parse(versao);
             String versaoInterna = preferences.getVersao();
+
+            Log.i("versao interna", versaoInterna);
+
             Date dataInterna = format.parse(versaoInterna);
             return dataExterna.after(dataInterna);
         } catch (ParseException e) {
@@ -108,14 +115,15 @@ public class AlunoSincronizador {
 
         List<Aluno> alunos = dao.listaNaoSincronizados();
 
+        dao.close();
+
         Call<AlunoSync> call = new RetrofitInicializador().getAlunoService().atualiza(alunos);
 
         call.enqueue(new Callback<AlunoSync>() {
             @Override
             public void onResponse(Call<AlunoSync> call, Response<AlunoSync> response) {
                 AlunoSync alunoSync = response.body();
-                dao.sincroniza(alunoSync.getAlunos());
-                dao.close();
+                sincroniza(alunoSync);
             }
 
             @Override
